@@ -1,0 +1,136 @@
+<style>
+/* Cải thiện giao diện bảng */
+.table-responsive {
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    margin-top: 20px; /* Thêm khoảng cách trên */
+    text-align: center;
+}
+
+.table {
+    width: 100%;
+    border-collapse: separate; /* Sử dụng separate để có khoảng cách giữa các ô */
+    border-spacing: 10px; /* Giãn cách giữa các ô trong bảng */
+}
+
+.table th, .table td {
+    padding: 15px; /* Tăng padding để các ô rộng hơn */
+    vertical-align: middle;
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+    border-radius: 5px; /* Bo góc cho các ô, nhưng không thêm viền */
+}
+
+/* Tiêu đề bảng */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #80def0, #80def0);
+    color: white;
+    font-weight: bold;
+}
+
+/* Tùy chỉnh tiêu đề chính */
+h1 {
+    color: #0b0c0c; /* Màu hồng cho tiêu đề */
+    font-size: 2.5rem; /* Cỡ chữ lớn */
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-align: center; /* Căn giữa tiêu đề */
+    margin-bottom: 30px;
+}
+
+/* Đổi màu badge theo trạng thái */
+.badge {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border-radius: 50px;
+}
+
+/* Tùy chỉnh nút Xem */
+.btn-custom {
+    background-color: #80def0;
+    color: gray;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+}
+
+.btn-custom:hover {
+    background-color: #80def0;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-custom:focus, .btn-custom:active {
+    outline: none;
+    box-shadow: 0 0 0 0.25rem #80def0;
+}
+
+
+</style>
+<div class="order-history-container container my-5">
+    <h1 class="text-center mb-4">Lịch Sử Đơn Hàng</h1>
+    {% if orders %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="bg-gradient-primary text-white">
+                <tr>
+                    <th>Mã Đơn Hàng</th>
+                    <th>Ngày Đặt</th>
+                    <th>Tổng Tiền</th>
+                    <th>Trạng Thái</th>
+                    <th scope="col">Ngày Duyệt</th>
+                    <th>Hóa Đơn</th> <!-- Thay vì cột trống, sử dụng tên rõ ràng -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr class="table-light">
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.date_order|date:"d-m-Y H:i:s" }}</td>
+                    <td class="text-success fw-bold">{{ order.get_cart_total }} VND</td>
+                    <td>
+                        <span class="badge {% if order.status == 'approved' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                            {% if order.status == 'approved' %}
+                                Đã duyệt
+                            {% else %}
+                                Chưa duyệt
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        {% if order.approved_date %}
+                            {{ order.approved_date|date:"d-m-Y H:i:s" }}
+                        {% else %}
+                            <span class="text-muted">Chưa duyệt</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if order.invoice %}
+                            <a href="{% url 'invoice_detail' order.invoice.id %}" class="btn btn-custom">Xem</a>
+                        {% else %}
+                            <span class="text-muted">Chưa có hóa đơn</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <a href="{% url 'home' %}" class="btn-back"><i class="bi bi-arrow-left-circle"></i>Quay lại</a>
+    {% else %}
+        <p class="text-center text-muted">Bạn chưa có đơn hàng nào!</p>
+    {% endif %}
+</div>

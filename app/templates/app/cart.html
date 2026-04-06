@@ -1,0 +1,157 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block cart_content %}
+
+<div class="container mt-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a class="btn btn-outline-dark" href="{% url 'home' %}">
+            ← Tiếp tục mua sắm
+        </a>
+
+        <h4>🛒 Giỏ hàng của bạn</h4>
+    </div>
+
+    <div class="row">
+
+        <!-- DANH SÁCH SẢN PHẨM -->
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th></th>
+                                <th>Sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Số lượng</th>
+                                <th>Tổng</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                        {% for item in items %}
+
+                        <tr>
+
+                            <td>
+                                <img src="{{ item.product.ImageURL }}"
+                                     style="width:80px;height:80px;object-fit:cover;">
+                            </td>
+
+                            <td>
+                                <strong>{{ item.product.name }}</strong>
+                            </td>
+
+                            <td>
+                                {{ item.product.price }} VND
+                            </td>
+
+                            <td>
+
+                                <div class="d-flex align-items-center">
+
+                                    <img data-product="{{ item.product.id }}"
+                                         data-action="remove"
+                                         class="chg-quantity update-cart"
+                                         src="{% static 'app/images/down.png' %}"
+                                         style="width:15px;cursor:pointer">
+
+                                    <span class="mx-2">{{ item.quantity }}</span>
+
+                                    <img data-product="{{ item.product.id }}"
+                                         data-action="add"
+                                         class="chg-quantity update-cart"
+                                         src="{% static 'app/images/up.png' %}"
+                                         style="width:15px;cursor:pointer">
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                <strong>{{ item.get_total|floatformat:3 }} VND</strong>
+                            </td>
+
+                            <td>
+
+                                <button
+                                data-product="{{ item.product.id }}"
+                                data-action="delete"
+                                class="btn btn-sm btn-danger update-cart">
+
+                                Hủy
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- PHẦN THANH TOÁN -->
+        <div class="col-lg-4">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h5 class="mb-3">Tóm tắt đơn hàng</h5>
+
+                    <p>
+                        Sản phẩm:
+                        <strong>{{ order.get_cart_items }}</strong>
+                    </p>
+
+                    <p>
+                        Tổng tiền:
+                        <strong class="text-danger">
+                        {{ order.get_cart_total|floatformat:3 }} VND
+                        </strong>
+                    </p>
+
+                    <hr>
+
+                    <!-- Thanh toán thường -->
+                    <a href="{% url 'checkout' %}"
+                       class="btn btn-success w-100 mb-2">
+
+                        Thanh toán
+
+                    </a>
+
+
+                    <!-- Thanh toán thẻ -->
+                    <a href="{% url 'payment' %}" class="btn btn-primary w-100">
+💳 Thanh toán bằng thẻ
+</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{% static 'app/js/cart.js' %}"></script>
+
+{% endblock cart_content %}

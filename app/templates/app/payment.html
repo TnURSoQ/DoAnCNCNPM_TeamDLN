@@ -1,0 +1,54 @@
+{% extends 'app/base.html' %}
+
+{% block content_checkout %}
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+
+        <div class="col-lg-6">
+            <div class="box-element p-4">
+
+                <h3>Thanh toán đơn hàng</h3>
+                <hr>
+
+                <p>Số sản phẩm: <strong>{{ order.get_cart_items }}</strong></p>
+                <p>Tổng tiền: <strong>{{ order.get_cart_total }} VND</strong></p>
+
+                <a href="{% url 'create_checkout_session' %}" class="btn btn-success">
+💳 Thanh toán bằng Stripe
+</a>
+
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="box-element p-4">
+
+                <h4>Thông tin đơn hàng</h4>
+                <hr>
+
+                {% for item in order.orderitem_set.all %}
+
+                <div class="row mb-3 align-items-center">
+                    <div class="col-3">
+                        <img src="{{ item.product.ImageURL }}" width="70">
+                    </div>
+
+                    <div class="col-6">
+                        {{ item.product.name }}
+                    </div>
+
+                    <div class="col-3">
+                        x{{ item.quantity }}
+                    </div>
+                </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
